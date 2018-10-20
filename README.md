@@ -1,4 +1,4 @@
-# project
+# Simple D3.js Flow Chart
 Make sure the Node.js is installed
 to start the project, go to project folder: 
 1. npm install
