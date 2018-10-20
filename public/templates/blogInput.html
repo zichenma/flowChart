@@ -1,0 +1,15 @@
+<div class="form-group">
+    <form>
+        <label for="title">Title:</label>
+        <input type="text" class="form-control" id="title" ng-model="blog.title">
+        <label for="name">Author:</label>
+        <input type="text" class="form-control" id="name" ng-model="blog.author">
+        <hr/>
+        <textarea class="form-control" rows="5" ng-model="blog.body" placeholder="Your blog"></textarea>
+        <br/>
+        <button class="btn btn-danger btn-md pull-left" ng-click="clear()">Clear</button>
+        <!-- <button class="btn btn-success btn-md pull-right" ng-click="submit()"><a href="#/blog">Submit</a></button> -->
+        <button class="btn btn-success btn-md pull-right" ng-click="submit()">Post</button>
+        <br/>
+    </form> 
+</div>
