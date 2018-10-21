@@ -31,10 +31,12 @@ flowApp.directive('node', function($window){
                     .data(stateData, function (d) { 
                         return d.id;
                     })
-          
                 rects.enter()
                   .append("rect")
                   .attr("id", function(d) {return "box-" + d.id;})
+                  .attr('class', function (d) { 
+                          return setClass(d.id); 
+                   })
                   .attr("width", 50)
                   .attr("height", 50)
                   .attr("x", 0)
@@ -44,10 +46,8 @@ flowApp.directive('node', function($window){
                     if (d3.event.defaultPrevented) {
                         return;
                     }
-                    //d3.select(this).attr('fill', 'orange');
                     scope.currEle = d3.select(this);
                     openPrompt();
-                     
                   })
                   .call(drag);
                 rects.transition()
@@ -64,18 +64,31 @@ flowApp.directive('node', function($window){
                     .remove();
               }
 
+              function setClass (id) {
+                if ( id % 2 == 0) {
+                    return 'first';
+                } else {
+                    return 'second';
+                }
+              }
+
               function dragmove(d) {
                 d3.select(this)
                     .attr("x", d3.event.x)
                     .attr("y", d3.event.y);
-                // let x = d3.event.x;
-                // let y = d3.event.y + 50;
-                // d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
-                // if (d3.select(this).attr("id") == "box-1") {
-                //     line.attr("x1", x);
-                //     line.attr("y1", y);
-                // } 
-            
+
+                let x = d3.event.x;
+                let y = d3.event.y;
+
+                if (scope.lines != undefined) {
+                    if (d3.select(this).attr('class') === 'first') {
+                        scope.lines.attr("x1", x);
+                        scope.lines.attr("y1", y);
+                    } else {
+                        scope.lines.attr("x2", x);
+                        scope.lines.attr("y2", y);
+                    }
+                 }
               }
 
               function openPrompt () {
@@ -99,22 +112,39 @@ flowApp.directive('node', function($window){
                             text: 'Cancel',
                             value: '4',
                         },
-                        
                     ],
                     callback: function (result) {
                         scope.getStatus({newSta:result});
                         let success = '1';
                         if (result === success) {
-                            //scope.currEle.attr('fill', 'orange');
                             openComfirm();
                         }   
                     }
                 });
             }
+            
+            function drawLine () {
+                let preObj = scope.stateData[scope.stateData.length - 2];
+                let lineData = [
+                    {x : parseInt(preObj.x) + 50, y : 25},
+                    {x : parseInt(preObj.x) + 100, y : 25},
+                ]
+                scope.lines = svg.append('line')
+                    .style('stroke', 'black')
+                    .attr('id', 'line-' + preObj.id)
+                    .attr('x1', lineData[0].x)
+                    .attr('y1', lineData[0].y)
+                    .attr('x2', lineData[1].x)
+                    .attr('y2', lineData[1].y);
+            }
+
             function openComfirm () {
                 bootbox.confirm("Add another state?", 
                 function(result){ 
                     scope.isAdd({toAdd : result});
+                    if (result === true) {
+                        drawLine();
+                    }
                 });
             }
         }
