@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Simple AngularJS D3 Flow Chart</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
     <style>
         svg{
             border: 1px solid black;
@@ -13,28 +14,41 @@
     </style>
 </head>
 <body ng-app="myFlow">
-
 <div class="container" ng-controller="mainCtr">
+        <a class="github-fork-ribbon" href="https://github.com/zichenma/flowChart" data-ribbon="Download Source Code" title="Download Source Code">Download Source Code</a>
     <h1 align="center">Simple AngularJS D3 Flow Chart</h1>
     <h2>State Status:</h2>   
     <h4 style="color: blueviolet">Please click the block to choose the status</h4>
-    <h1>
+    <ul>
+        <li>Select success will enable next state.</li>
+        <li>Select error will stop state, state color changes to red.</li>
+        <li>Select stop will stop state, state color changes to maroon.</li>
+        <li>Select cancel will go back to first state</li>
+    </ul>
+    <h3>
         <span class="label label-default" style="background-color: gray">Initial</span>
         <span class="label label-default" style="background-color: green">Success</span>
         <span class="label label-default" style="background-color: red">Fail</span>
         <span class="label label-default" style="background-color: maroon">Stop</span>
-    </h1>
+    </h3>
     <hr/>
     <div node 
     state-data="stateData" 
     get-status="updateStatus(newSta)"
     is-add="goToAdd(toAdd)" 
-    control="outerControl"></div>
+    control="outerControl">
+    </div>
+    <h2>Freamworks:</h2>
+    <ul>
+        <li><a href="https://angularjs.org/">AngularJS 1.5.7</a></li>
+        <li><a href="https://getbootstrap.com/docs/3.3/">BootStrap 3</a></li>
+        <li><a href="http://bootboxjs.com/">Bootbox.js 4.4.0</a></li>
+        <li><a href="https://d3js.org/">D3.js 3.4.0</a></li>
+    </ul>
 </div>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.0/d3.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
 <script type="text/javascript" src="main.js"></script>

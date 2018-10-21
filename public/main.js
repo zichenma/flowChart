@@ -1,11 +1,8 @@
-// https://codepen.io/anon/pen/JmOqzL
-// http://jsbin.com/mamoyunuda/1/edit?html,js,output
-// http://embed.plnkr.co/LbUpyo/
-// https://stackoverflow.com/questions/16881478/how-to-call-a-method-defined-in-an-angularjs-directive
 let flowApp = angular.module('myFlow', []);
 
 flowApp.controller('mainCtr', function ($scope) {
 
+  // initialize: 
   let stateStatus = 'inital';
   let initalX = 0;
   let initalY = 0;
@@ -21,6 +18,8 @@ flowApp.controller('mainCtr', function ($scope) {
 
   $scope.toAdd = false;
 
+  // keep the data and data opertaions (CRUD) saparate from node component
+  // node compoent is in charge of rendering svg
   $scope.stateData = [
       { id: 0, 
         status: stateStatus, 
@@ -29,9 +28,14 @@ flowApp.controller('mainCtr', function ($scope) {
         y : initalY
       },
   ];
-
+  
+  // for accessing the angular directive (component) function
   $scope.outerControl = {};
   
+  
+  // @param  toAdd
+  //         from the node component, the second comfirmation to add state 
+ 
   $scope.goToAdd = function (toAdd) {
     if (toAdd === true) {
       $scope.addState();
@@ -41,6 +45,7 @@ flowApp.controller('mainCtr', function ($scope) {
     } 
   }
 
+  // add new state
   $scope.addState = function () {
       let nextX = nextId * horizontalDis;
       if ($scope.stateData.length < stateNum) {
@@ -55,6 +60,7 @@ flowApp.controller('mainCtr', function ($scope) {
       nextId++;
   };
 
+  // clear all states and go back to the original state
 
   $scope.clearState = function () {
     let lines = document.querySelectorAll('line');
@@ -67,9 +73,16 @@ flowApp.controller('mainCtr', function ($scope) {
     $scope.outerControl.draw($scope.stateData);
   };
 
+  // @param  newSta
+  //         from the node component, the first comfirmation to select the status 
+
   $scope.updateStatus = function (newSta) {
     $scope.judgeState(newSta);
   }
+
+  // @param  newSta
+  //         from the node component, the first comfirmation to select the status 
+  // to judge each status's behavior
 
   $scope.judgeState = function (num) {
     let success = '1';
@@ -103,7 +116,7 @@ flowApp.controller('mainCtr', function ($scope) {
         stateColor = stateColors.default;
     }
   }
-
+  // watch the data source changes
   $scope.$watch('stateData',
     function () {
         $scope.outerControl.draw($scope.stateData);

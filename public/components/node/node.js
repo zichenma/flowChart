@@ -9,12 +9,16 @@ flowApp.directive('node', function($window){
       },
       template:"<svg width='1200' height='500'></svg>",
         link: function(scope, elem){
+            // export component scope to controller
             scope.internalControl = scope.control || {};
+            // initialize d3 and svg
             let d3 = $window.d3;
             let rawSvg = elem.find('svg');
             let svg = d3.select(rawSvg[0]);
             scope.currEle = null;
-        
+
+            // @param  stateData
+            // from the controller, to draw the svg
             scope.internalControl.draw = function (stateData) {
                 stateData = scope.stateData;
                 let drag = d3.behavior.drag()
@@ -63,7 +67,7 @@ flowApp.directive('node', function($window){
                     .attr("width", 0)
                     .remove();
               }
-
+              // according to id set the class for drag feature
               function setClass (id) {
                 if ( id % 2 == 0) {
                     return 'first';
@@ -90,7 +94,7 @@ flowApp.directive('node', function($window){
                     }
                  }
               }
-
+              // the state status comfirmatiom 
               function openPrompt () {
                     bootbox.prompt({
                     title: "Please select your status",
@@ -122,7 +126,7 @@ flowApp.directive('node', function($window){
                     }
                 });
             }
-            
+            // draw lines between two states accrdoing the coordinates in data
             function drawLine () {
                 let preObj = scope.stateData[scope.stateData.length - 2];
                 let lineData = [
@@ -131,13 +135,14 @@ flowApp.directive('node', function($window){
                 ]
                 scope.lines = svg.append('line')
                     .style('stroke', 'black')
+                    .attr("stroke-width", 2)
                     .attr('id', 'line-' + preObj.id)
                     .attr('x1', lineData[0].x)
                     .attr('y1', lineData[0].y)
                     .attr('x2', lineData[1].x)
                     .attr('y2', lineData[1].y);
             }
-
+            // the second comfirmation to add 
             function openComfirm () {
                 bootbox.confirm("Add another state?", 
                 function(result){ 
