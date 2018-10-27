@@ -18,6 +18,19 @@ flowApp.controller('mainCtr', function ($scope) {
 
   $scope.toAdd = false;
 
+
+  
+
+  $scope.getMoved = function (isMoved) {
+     if (isMoved) {
+      $scope.getPre = function (pre) {
+        initalX = pre.x;
+        initalY = pre.y;
+      }
+    }
+  }
+
+
   // keep the data and data opertaions (CRUD) saparate from node component
   // node compoent is in charge of rendering svg
   $scope.stateData = [
@@ -44,7 +57,8 @@ flowApp.controller('mainCtr', function ($scope) {
       return;
     } 
   }
-
+ 
+ 
   // add new state
   $scope.addState = function () {
       let nextX = nextId * horizontalDis;
