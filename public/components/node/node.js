@@ -23,10 +23,6 @@ flowApp.directive('node', function($window){
             scope.currEle = null;
             let moved = false;
 
-
-            
-         
-
             // @param  stateData
             // from the controller, to draw the svg
             scope.internalControl.draw = function (stateData) {
@@ -51,8 +47,8 @@ flowApp.directive('node', function($window){
                   .attr('class', function (d) { 
                           return setClass(d.id); 
                    })
-                  .attr("width", 50)
-                  .attr("height", 50)
+                  .attr("width", width)
+                  .attr("height", width)
                   .attr("x", 0)
                   .attr("y", 0)
                   .attr("fill", 'blue')
@@ -85,9 +81,7 @@ flowApp.directive('node', function($window){
                     return 'target';
                 }
               }
-
               
-
               function updateFirst (allLineData, x, y) {
                     allLineData[0][0]['x'] = x + width;
                     allLineData[0][0]['y'] = y;
@@ -99,8 +93,6 @@ flowApp.directive('node', function($window){
               }
 
               function updateRest (allLineData, x, y, d) {
-                // let preRect = scope.stateData[scope.stateData.length - 2];
-                // let nextRect = scope.stateData[d.id + 1];
                 let preLineIdx = d.id - 1;
 
                 if (d.id === 0) {
@@ -110,18 +102,12 @@ flowApp.directive('node', function($window){
                 } else {
                     allLineData[preLineIdx][1]['x'] = x;
                     allLineData[preLineIdx][1]['y'] = y;
-                    allLineData[d.id][0]['x'] = x + 50;
+                    allLineData[d.id][0]['x'] = x + width;
                     allLineData[d.id][0]['y'] = y;
                 }
               }
 
               function updateLast (allLineData, x, y, d) {
-                    //let preLineIdx = d.id - 1;
-                    // console.log(preLineIdx);
-                    // console.log(scope.stateData[scope.stateData.length - 2]);
-                   // allLineData[allLineData.length - 1][0]['x'] = scope.stateData[scope.stateData.length - 2]['x'] + 50;
-                    //allLineData[allLineData.length - 1][0]['y'] = scope.stateData[scope.stateData.length - 2]['y'] + 25;
-     
                     allLineData[allLineData.length - 1][1]['x'] = x;
                     allLineData[allLineData.length - 1][1]['y'] = y;
               }
@@ -132,33 +118,30 @@ flowApp.directive('node', function($window){
                     .attr("y", d3.event.y);
                 moved = true;
                 scope.setMoved({isMoved : moved})
-            // console.log(d);
-               // console.log(d.id);
-                //console.log(scope.stateData);
-                //updateData(d, scope.stateData);
-                //console.log(scope.stateData);
-                // console.log(d3.select(this)[0][0].getAttribute('id'));
+
+                let domId = d3.select(this).attr('id');
+                let domIdInt = parseInt(domId.substring(domId.length -1 , domId.length));
+
                 let x = d3.event.x;
                 let y = d3.event.y + height / 2;
 
-                let preObj = judgePre(x, y);
-                scope.setPre({pre : preObj})
+                let coor = {
+                   id : domIdInt,
+                   currX : x,
+                   currY : y
+                }
+                
+                let currDataId = scope.stateData[scope.stateData.length - 1].id;
+                
+                if (coor.id >= currDataId) {
+                    localStorage.setItem('coor', JSON.stringify(coor));
+                }
 
                 if (scope.lines != undefined) {
                     drawstrategy (allLines, x, y, d)
                     drawAllLines(allLines);
                  }
               }
-
-            function judgePre (x, y) {
-                let pre;
-                if (scope.stateData.length === 1) {
-                    pre = {x, y}
-                } else {
-                    pre = scope.stateData[scope.stateData.length - 2];
-                }
-                return pre;
-            }
 
             function lessThanTwo (allLineData, x, y, d) {
                 if (d.id % 2 == 0) {
@@ -175,7 +158,6 @@ flowApp.directive('node', function($window){
                     lessThanTwo(allLines, x, y, d);
                 } else {
                     updateRest(allLines, x, y, d);
-                    // updateLast (allLines, x, y, d);
                 }
             }
 
@@ -218,9 +200,13 @@ flowApp.directive('node', function($window){
                     callback: function (result) {
                         scope.getStatus({newSta:result});
                         let success = '1';
+                        let cancel = '4';
                         if (result === success && scope.stateData.length !== 5) {
                             openComfirm();
-                        }   
+                        }
+                        if (result === cancel) {
+                            allLines = [];
+                        }
                     }
                 });
             }
@@ -244,9 +230,6 @@ flowApp.directive('node', function($window){
 
                 allLines = [...allLines, lineData];
             }
-
-           
-
             // the second comfirmation to add 
             function openComfirm () {
                 bootbox.confirm("Add another state?", 

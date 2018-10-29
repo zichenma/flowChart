@@ -17,19 +17,15 @@ flowApp.controller('mainCtr', function ($scope) {
   }
 
   $scope.toAdd = false;
+  $scope.isMoved = false;
+  localStorage.clear();
 
-
-  
 
   $scope.getMoved = function (isMoved) {
      if (isMoved) {
-      $scope.getPre = function (pre) {
-        initalX = pre.x;
-        initalY = pre.y;
-      }
+     $scope.isMoved = isMoved;
     }
   }
-
 
   // keep the data and data opertaions (CRUD) saparate from node component
   // node compoent is in charge of rendering svg
@@ -57,21 +53,31 @@ flowApp.controller('mainCtr', function ($scope) {
       return;
     } 
   }
- 
- 
+  
   // add new state
   $scope.addState = function () {
-      let nextX = nextId * horizontalDis;
-      if ($scope.stateData.length < stateNum) {
-          $scope.stateData.push({
-            id: nextId,
-            status: stateStatus,
-            color : stateColors.default,
-            x: nextX,
-            y: initalY
-          });
+    let nextX;
+    if ($scope.isMoved == true) {
+      nextX = JSON.parse(localStorage.getItem('coor')).currX + horizontalDis;
+      initalY= JSON.parse(localStorage.getItem('coor')).currY - 25;
+    } else {
+      if (JSON.parse(localStorage.getItem('coor')) == null) {
+         nextX = nextId * horizontalDis;
+      } else {
+        nextX = JSON.parse(localStorage.getItem('coor')).currX + horizontalDis * nextId;
       }
-      nextId++;
+    }
+    if ($scope.stateData.length < stateNum) {
+        $scope.stateData.push({
+          id: nextId,
+          status: stateStatus,
+          color : stateColors.default,
+          x: nextX,
+          y: initalY
+        });
+    }
+    $scope.isMoved = false;
+    nextId++;
   };
 
   // clear all states and go back to the original state
@@ -83,7 +89,13 @@ flowApp.controller('mainCtr', function ($scope) {
     while ($scope.stateData.length > 1) {
       $scope.stateData.pop();
     }
+    $scope.stateData[$scope.stateData.length - 1]['x'] = 0;
+    $scope.stateData[$scope.stateData.length - 1]['y'] = 0;
     nextId = 1;
+    initalX = 0;
+    initalY = 0;
+    $scope.isMoved = false;
+    localStorage.clear();
     $scope.outerControl.draw($scope.stateData);
   };
 
